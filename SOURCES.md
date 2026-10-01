@@ -1,6 +1,6 @@
 # Desk Prep — public demo
 
-A static web app to prepare Sales & Trading / Global Markets interviews: 1740 flashcards (options, rates/FX/credit,
+A static web app to prepare Sales & Trading / Global Markets interviews: 1883 flashcards (options, rates/FX/credit,
 markets, structuring, quant, corporate finance, brainteasers, fit and CV questions), spaced repetition, a daily plan,
 puzzles with hints and a mental-maths drill. Built by Pierre Fourel for his own preparation.
 

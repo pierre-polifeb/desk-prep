@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-6l7x3DgY8ZH3xN6tG4KJ1luWTv0E1e5psg0mcwglw5U='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Desk Prep : l'appli de révision conçue et codée par Pierre Fourel pour préparer les entretiens Sales &amp; Trading / Global Markets. · The revision app built to prepare Sales &amp; Trading interviews.">
+<title>Desk Prep · entretiens Sales &amp; Trading</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232f5bea'/%3E%3Cpath d='M18 22h28M18 32h28M18 42h18' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f2f4f9;--surface:#fff;--ink:#151a2d;--ink2:#3f4760;--muted:#687089;--line:#dfe3ee;--primary:#2f5bea;--primary-strong:#1d43c4;
+--primary-soft:#e5ebfd;--hero:#2f5bea;--hero-2:#4a74ff;--warm:#ff9d1a;--sh1:0 1px 2px rgba(21,26,45,.06),0 4px 14px rgba(21,26,45,.06);
+--sh2:0 2px 6px rgba(21,26,45,.06),0 16px 40px rgba(21,26,45,.10);--f:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1222;--surface:#161c31;--ink:#eef1fa;--ink2:#c4cadd;--muted:#9098b4;--line:#2a3150;
+--primary:#6f8cff;--primary-strong:#5475f5;--primary-soft:#232d55;--hero:#26398f;--hero-2:#3149b0;--warm:#ffb13d;
+--sh1:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);--sh2:0 2px 6px rgba(0,0,0,.3),0 16px 40px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.5 var(--f);-webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:7vh 16px 48px}
+.hero{background:linear-gradient(135deg,var(--hero),var(--hero-2));color:#fff;border-radius:28px;padding:28px 24px;box-shadow:var(--sh2)}
+.hero h1{margin:0 0 10px;font-size:34px;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.hero p{margin:0 0 10px;opacity:.95}
+.hero p.en{opacity:.82;font-size:15px}
+.hero .facts{margin:14px 0 0;font-weight:600;font-size:15px;opacity:1}
+.hero .sig{margin:14px 0 0;font-size:14px;opacity:.85}
+.badge{display:inline-block;margin-bottom:14px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.2);font-size:13px;font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px}
+a.lang{flex:1 1 240px;display:block;padding:20px;border-radius:22px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh1);
+color:var(--ink);text-decoration:none;transition:transform .15s,box-shadow .15s}
+a.lang:hover,a.lang:focus-visible{transform:translateY(-2px);box-shadow:var(--sh2);outline:none;border-color:var(--primary)}
+a.lang b{display:block;font-size:20px;color:var(--primary);margin-bottom:2px}
+a.lang span{color:var(--ink2);font-size:15px}
+a.lang.pref{order:-1;border-color:var(--primary);background:var(--primary-soft)}
+a.lang em{display:none;margin-top:8px;font-style:normal;font-size:13px;font-weight:600;color:var(--primary)}
+a.lang.last em{display:block}
+ul{margin:24px 0 0;padding:0;list-style:none;color:var(--muted);font-size:14px}
+li{padding:4px 0}li::before{content:"•";color:var(--warm);font-weight:800;margin-right:8px}
+footer{margin-top:28px;color:var(--muted);font-size:13px}
+footer a{color:var(--primary)}
+</style></head><body><main>
+<section class="hero">
+<span class="badge">Démo · Demo</span>
+<h1>Desk Prep</h1>
+<p lang="fr">L'appli de révision que j'ai conçue et codée pour préparer mes entretiens Sales &amp; Trading / Global Markets.</p>
+<p class="en" lang="en">The revision app I designed and built to prepare for my Sales &amp; Trading / Global Markets interviews.</p>
+<p class="facts" lang="fr">1 740 cartes · 220 énigmes · calcul mental · répétition espacée</p>
+<p class="sig">Pierre Fourel · Centrale Nantes</p>
+</section>
+<div class="row" id="langs">
+<a class="lang" id="go-fr" href="fr/" hreflang="fr" lang="fr"><b>Essayer en français</b><span>Interface et cartes en français</span><em>Votre dernier choix</em></a>
+<a class="lang" id="go-en" href="en/" hreflang="en" lang="en"><b>Try it in English</b><span>1,740 cards · 220 brainteasers</span><em>Your last choice</em></a>
+</div>
+<ul>
+<li lang="fr">Sans compte : votre progression reste dans ce navigateur.</li>
+<li lang="en">No account: your progress stays in this browser.</li>
+<li lang="fr">Aucun traceur, aucune statistique de visite.</li>
+<li lang="en">No trackers, no analytics.</li>
+</ul>
+<footer>Projet personnel, non affilié à une banque ou un établissement · Personal project, not affiliated with any bank or firm.<br>
+<a href="https://github.com/pierre-polifeb/desk-prep/blob/main/SOURCES.md">Sources &amp; licences</a> ·
+<a href="https://github.com/pierre-polifeb/desk-prep">Code</a></footer>
+</main>
+<script>(function(){var K="deskprep.lang",last=null,pref="en";try{last=localStorage.getItem(K)}catch(e){}if(last!=="fr"&&last!=="en")last=null;if(last)pref=last;else{var l=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||""];for(var i=0;i<l.length;i++){var s=String(l[i]).toLowerCase();if(s.indexOf("fr")===0){pref="fr";break}if(s.indexOf("en")===0)break}}var a=document.getElementById("go-"+pref);if(a){a.className+=" pref";if(last)a.className+=" last"}["fr","en"].forEach(function(g){var b=document.getElementById("go-"+g);if(b)b.addEventListener("click",function(){try{localStorage.setItem(K,g)}catch(e){}})})})();</script>
+</body></html>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="robots" content="noindex">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lJbmUCLP7x7So/UCsCNj+NwLpL2EBMffJhxTZONSvYA=' 'sha256-CU1wiGIOVp0ZEGFb4GpuO05wzOnxVL7HbsiAEXlTs/0=' 'sha256-kAved0b+XVJhOxFgpeXhl7fL/a29l0i970km3F/8cTM=' https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/ https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.3.3/ https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lJbmUCLP7x7So/UCsCNj+NwLpL2EBMffJhxTZONSvYA=' 'sha256-CU1wiGIOVp0ZEGFb4GpuO05wzOnxVL7HbsiAEXlTs/0=' 'sha256-ypOuKYGRDCc6aiIMFPC2qr0V3L4m/xuUwVygI1JLK8Q=' https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/ https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.3.3/ https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>body{margin:0}[hidden]{display:none!important}</style>
@@ -322,7 +322,17 @@ details.fu .md{padding:0 12px 12px 48px;font-size:16px}
 .md pre{background:var(--code);padding:12px 14px;overflow-x:auto;border-radius:var(--r-sm);font-size:14px}
 .md pre code{background:none;padding:0}
 .md table{border-collapse:collapse;font-size:15px;display:block;overflow-x:auto;max-width:100%;margin:0 0 1em;font-variant-numeric:tabular-nums}
+.md .tbl{overflow-x:auto;max-width:100%;margin:0 0 1em;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.md .tbl>table{display:table;overflow:visible;max-width:none;margin:0}
+.md .tbl.more{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent)}
+.md .tbl.less{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 24px),transparent)}
+.md .tbl.more.less{-webkit-mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 36px),transparent)}
 .md th,.md td{border-bottom:1px solid var(--line);padding:6px 14px 6px 0;text-align:left;vertical-align:top}
+.md th{min-width:4.5em;vertical-align:bottom}
+.md .tbl.more{box-shadow:inset -22px 0 18px -16px color-mix(in srgb,var(--ink) 42%,transparent)}
+.md .tbl.less:not(.more){box-shadow:inset 22px 0 18px -16px color-mix(in srgb,var(--ink) 42%,transparent)}
+.md .tbl.more.less{box-shadow:inset -22px 0 18px -16px color-mix(in srgb,var(--ink) 42%,transparent),inset 22px 0 18px -16px color-mix(in srgb,var(--ink) 42%,transparent)}
+.md .nw{white-space:nowrap}
 .md th{font-weight:700;color:var(--ink2)}
 .md blockquote{margin:0 0 .8em;padding:8px 14px;border-radius:var(--r-sm);background:var(--surface2);color:var(--ink2)}
 .md mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
@@ -1140,8 +1150,15 @@ function md(src){
   const W=typeof window!=="undefined"?window:{}, P=W.DOMPurify;
   if(P&&purifyHooked!==P&&typeof P.addHook==="function"){ P.addHook("afterSanitizeAttributes",linkHook); purifyHooked=P }
   let h=W.marked&&P&&typeof P.sanitize==="function"?String(P.sanitize(W.marked.parse(s),PURIFY)):"<p>"+esc(s).replace(/\n/g,"<br>")+"</p>";
-  return h.replace(/@@M(\d+)@@/g,(_,i)=>esc(m[+i]));
+  h=mdNoBreak(h).replace(/<table>/g,'<div class="tbl"><table>').replace(/<\/table>/g,"</table></div>"); // v9.2 QA: a wide table scrolls in its own box
+  return h.replace(/@@M(\d+)@@((?:[)\]}.,;%…]|[   ]?[:;!?»])+)/g,(_,i,p)=>m[+i].startsWith("\\(")?`<span class="nw">${esc(m[+i])}${p}</span>`:`@@M${i}@@${p}`) // v9.2 QA M: punctuation stays with its formula
+    .replace(/@@M(\d+)@@/g,(_,i)=>esc(m[+i]));
 }
+// v9.2 QA: text only (never inside a tag): « 1 000 » / « 82 800,5 » never split (U+202F), nor « 5 % » / « 3 € » (U+00A0).
+function mdNoBreak(h){ return String(h).replace(/>[^<]+/g,x=>x.replace(/(\d) (?=\d{3}(?!\d))/g,"$1 ").replace(/(\d) (?=[%€])/g,"$1 ")) }
+// v9.2 QA: a table wider than its box fades on the side that still hides columns (class « more » / « less »).
+let tblT=0; function tblHint(el){ try{ for(const b of (el||document).querySelectorAll(".md .tbl")) tblEdge(b) }catch{} }
+function tblEdge(b){ const x=b.scrollLeft, w=b.scrollWidth-b.clientWidth; b.classList.toggle("more",w>1&&x<w-1); b.classList.toggle("less",w>1&&x>1) }
 // v8d: HTML only (no SVG / MathML), no images (tracking beacons), links http(s) only and always in a new tab (linkHook).
 const PURIFY={USE_PROFILES:{html:true},FORBID_TAGS:["style","form","input","textarea","button","select","option","iframe","object","embed","img","picture","source","video","audio","link","meta","base"],FORBID_ATTR:["style","id","name","srcset","target","formaction"],ALLOW_DATA_ATTR:false,ALLOW_ARIA_ATTR:false};
 let mdAI=false; function mdAi(s){ mdAI=true; try{ return md(s) }finally{ mdAI=false } } // v8f R6: Claude replies
@@ -1158,9 +1175,9 @@ let mjChain=Promise.resolve();
 // v8f R1 (defence in depth): a formula never carries a link (MathJax SVG turns an href into <a>): unwrap it.
 function mjNoLinks(el){ try{ for(const a of el.querySelectorAll("mjx-container a")) a.replaceWith(...a.childNodes) }catch{} }
 function typeset(el,tries){
-  if(!el) return; const MJ=window.MathJax;
+  if(!el) return; const MJ=window.MathJax; if(!tries) tblHint(el);
   if(!MJ||!MJ.typesetPromise){ if((tries|0)<40) setTimeout(()=>typeset(el,(tries|0)+1),300); return }
-  mjChain=mjChain.then(()=>{ if(el.isConnected===false) return; try{ if(MJ.typesetClear) MJ.typesetClear() }catch{} return MJ.typesetPromise([el]).then(()=>mjNoLinks(el)) }).catch(()=>{});
+  mjChain=mjChain.then(()=>{ if(el.isConnected===false) return; try{ if(MJ.typesetClear) MJ.typesetClear() }catch{} return MJ.typesetPromise([el]).then(()=>{ mjNoLinks(el); tblHint(el) }) }).catch(()=>{});
 }
 
 /* ---------- scheduling (SM-2 style, tenor labels) ---------- */
@@ -2315,11 +2332,12 @@ let shownId=null, shownAt=0;
 const cardSecs=()=>{ const n=shownAt?Math.min(300,(Date.now()-shownAt)/1000):0; shownId=null; shownAt=0; return n };
 function rate(g){
   const c=cur, wasNew=!SRS[c.id];
-  { const m=sessObj(META.daily,today(),SID); if(!wasNew&&g>=3) m.ok=(+m.ok||0)+1; addSec(cardSecs()) } // v8: reviews known (retention) + time
+  { const m=sessObj(META.daily,today(),SID); if(!wasNew&&g>=3&&!isOpenCard(c)) m.ok=(+m.ok||0)+1; addSec(cardSecs()) } // v8: reviews known (retention) + time
   { const pl=(SRS[c.id]&&+SRS[c.id].last)||0; SRS[c.id]=nextState(SRS[c.id],g); if(SRS[c.id].last<pl+1000) SRS[c.id].last=pl+1000 } saveCard(c.id); // v8g DB-HC: a rating made after one from a device ahead in time still wins
   if(SESS.mode==="plan"&&(SESS.step==="mk"||SESS.step==="asked")){ const m=sessObj(META.daily,today(),SID); m.sc={...(m.sc||{}),[SESS.step]:(+(m.sc||{})[SESS.step]||0)+1} } // cards rated inside that step
-  if(openish()) bumpDay(META.daily,today(),SID,"op"); // an open question worked on (plan step « open »)
-  let x=countDay("rev"); if(wasNew) x=countDay("new"); // countDay returns the whole day entry: the second call includes the first
+  if(openish()||isOpenCard(c)) bumpDay(META.daily,today(),SID,"op"); // an open question worked on (plan step « open »)
+  // v9.2 QA: an open question is never a SRS card of the day: it neither uses the new-card quota nor counts as a review.
+  let x=isOpenCard(c)?dayPatch(today()):countDay("rev"); if(wasNew&&!isOpenCard(c)) x=countDay("new"); // countDay returns the whole day entry: the second call includes the first
   saveMeta(x);
   queue.shift(); fu=null; sessDone++;
   if(g===1) queue.splice(Math.min(3,queue.length),0,c.id);
@@ -2853,7 +2871,7 @@ document.addEventListener("click",async e=>{
   if(btn.id==="mockNext"){ if(mockInflight) return; const c=pickMockCard(); if(!c){ toast(t("Aucune carte ne correspond aux decks et filtres choisis")); return } mock={turns:[],card:c,busy:false}; renderMock(); if(!DEMO) mockSay(); return }
   if(btn.id==="mockSend"){ const v=$("#mockIn").value.trim().slice(0,3000); if(DEMO||!v||mock.busy) return;
     if(mock.turns.length>=MOCK_MAX_TURNS){ toast(t("Les {n} relances sont faites.",{n:MOCK_MAX_TURNS/2})); return } /* bounded history (quota, prompt size) */ const last=mock.turns[mock.turns.length-1]; if(last&&last.role==="user") last.text=v; else mock.turns.push({role:"user",text:v}); renderMock(); mockSay(); return }
-  if(btn.id==="mockCard"){ if(DEMO&&mock.card&&!mock.shown){ mock.shown=true; renderMock(); return } openCard(mock.card.id); return }
+  if(btn.id==="mockCard"){ if(DEMO&&mock.card&&!mock.shown){ mock.shown=true; renderMock(); return } clearTimeout(bqT); bqPend=false; browseQ=""; browseOpen=false; browsePage=0; openCard(mock.card.id); return } // v9.2 QA M: no stale Browse search header
   if(btn.dataset.pper){ pPer=PERIODS.includes(+btn.dataset.pper)?+btn.dataset.pper:14; lsSet("dp.pper",pPer); renderProgress(); return }
   if(btn.dataset.pmet){ pMet=btn.dataset.pmet==="time"?"time":"cards"; lsSet("dp.pmet",pMet); renderProgress(); return }
   if(btn.dataset.askall!==undefined){ askedAll=btn.dataset.askall==="1"; lsSet("dp.askedAll",askedAll); askedPage=0; renderAsked(); return }
@@ -2872,7 +2890,10 @@ document.addEventListener("click",async e=>{
 });
 document.addEventListener("toggle",e=>{ const d=e.target; if(d&&d.classList&&d.classList.contains("scwrap")&&window.matchMedia&&window.matchMedia("(max-width:720px)").matches) lsSet("dp.scOpen",d.open);
   if(d&&d.classList&&d.classList.contains("deep")){ deepOpen=d.open; lsSet("dp.deep",deepOpen);
-  deepFill(d,true) } },true); // deep dive drawn on first open
+  deepFill(d,true) }
+  if(d&&d.open&&d.querySelectorAll) tblHint(d) },true); // deep dive drawn on first open; v9.2: table fade once visible
+document.addEventListener("scroll",e=>{ const b=e.target; if(b&&b.classList&&b.classList.contains("tbl")) tblEdge(b) },true); // v9.2 QA: table fade follows the scroll
+if(typeof window!=="undefined"&&window.addEventListener) window.addEventListener("resize",()=>{ clearTimeout(tblT); tblT=setTimeout(()=>tblHint(document),150) });
 document.addEventListener("mouseover",e=>{ const el=e.target&&e.target.closest&&e.target.closest("[data-tip]"); if(el) tipShow(el) });
 document.addEventListener("mouseout",e=>{ const el=e.target&&e.target.closest&&e.target.closest("[data-tip]"); if(el) tipHide(el) });
 document.addEventListener("input",e=>{
